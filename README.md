@@ -1,6 +1,6 @@
 # Ledder
 
-Daily word path game by smAisle. Test version: not launched yet.
+Daily word path game by smAisle. Plus game in smAisle Daily.
 
-- word/index.html: Ledder
+- word/index.html: Ledder (built from source/)
 - math/index.html: Ledder Math test
