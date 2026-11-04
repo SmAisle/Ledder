@@ -1,7 +1,7 @@
 // Run from anywhere: node source/build.js x source/boards.json
 const fs=require('fs'),path=require('path');const S=process.argv[2],BF=process.argv[3];const SRC=__dirname;let h=fs.readFileSync(path.join(SRC,'base.html'),'utf8');
 function R(a,b,all){const n=h.split(a).length-1;if(n<1||(!all&&n!==1))throw new Error('miss '+n+' '+a.slice(0,60));h=h.split(a).join(b)}
-const VER='1.6',VD='Nov 4';
+const VER='1.7',VD='Nov 4';
 // ---- boards
 const F=JSON.parse(fs.readFileSync(BF));
 const m=h.match(/var AP=\[.*?\],BP=\[.*?\];/);if(!m)throw 'AP';h=h.replace(m[0],()=>'var AP='+JSON.stringify(F.map(x=>({w:[5,5,5,5,5,5,5],b:x.b,s:x.s})))+',BP=[];');
@@ -87,7 +87,7 @@ document.addEventListener('visibilitychange',function(){if(document.hidden)smAwa
 R(`if(s.done)receiptA();saveA(s);metaA(s);`,`if(s.done&&!hideT)receiptA();saveA(s);metaA(s);`);
 R(` $('rc').className=s.done?'show':'';`,` $('rc').className=s.done&&!hideT?'show':'';`);
 // done buttons
-R(` if(s.menu&&!s.done){$('btns')`,` if(s.done){$('btns').innerHTML='<button id="bT" class="go">See your ticket</button>';$('bT').onclick=function(){hideT=false;render()}}else if(s.menu){$('btns')`);
+R(` if(s.menu&&!s.done){$('btns')`,` if(s.done){$('btns').innerHTML='<button id="bT" class="go">See your ticket</button><button id="bH" class="y">‹ smAisle Daily</button>';$('bT').onclick=function(){hideT=false;render()};$('bH').onclick=hubGo}else if(s.menu){$('btns')`);
 // ticket
 const r0=h.indexOf('function receiptA(){'),r1=h.indexOf('\n',h.indexOf("$('rP').onclick",r0));
 h=h.slice(0,r0)+`function missNote(d,a){var t=(d.length?'<b>Top to bottom:</b> '+d.join(', ')+'. ':'')+(a.length?'<b>Also here:</b> '+a.join(', ')+'.':'');return t?'<div class="note">'+t+'</div>':''}
