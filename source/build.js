@@ -1,6 +1,7 @@
-const fs=require('fs');const S=process.argv[2],BF=process.argv[3];let h=fs.readFileSync('/home/claude/up/bee/bee.html','utf8');
+// Run from anywhere: node source/build.js x source/boards.json
+const fs=require('fs'),path=require('path');const S=process.argv[2],BF=process.argv[3];const SRC=__dirname;let h=fs.readFileSync(path.join(SRC,'base.html'),'utf8');
 function R(a,b,all){const n=h.split(a).length-1;if(n<1||(!all&&n!==1))throw new Error('miss '+n+' '+a.slice(0,60));h=h.split(a).join(b)}
-const VER='1.1',VD='Nov 4';
+const VER='1.3',VD='Nov 4';
 // ---- boards
 const F=JSON.parse(fs.readFileSync(BF));
 const m=h.match(/var AP=\[.*?\],BP=\[.*?\];/);if(!m)throw 'AP';h=h.replace(m[0],()=>'var AP='+JSON.stringify(F.map(x=>({w:[5,5,5,5,5,5,5],b:x.b,s:x.s})))+',BP=[];');
@@ -147,4 +148,20 @@ R(`</style>`,`#word.m{font-size:14px}#word.m.bad{background:var(--red);color:#ff
 R(`'<span class="none">'+sol.common.length+' everyday words on this board. Yours land here.</span>'`,`'<span class="none">'+Object.keys(everyWord()).length+' everyday words on this board. Yours land here.</span>'`);
 // misc
 h=h.split('FREE START').join('BOARD UNLOCKED').split('<h2>Free Start</h2>').join('<h2>Board Unlocked</h2>').split('Begin your next word on any letter, going up or down.').join('Your next word can start on any letter, going up or down.').split('Free start: begin on any letter').join('Board unlocked: begin on any letter').split('Free start. Begin on any letter.').join('Board unlocked. Begin on any letter.').split('<b>Free start</b>').join('<b>Unlock</b>').split('Reach the top or bottom row. Your next word can start on any letter.').join('Reach the top or bottom row to unlock the board. Your next word can start on any letter.').split('so your next word can start on any letter').join('so the board unlocks. Your next word can start on any letter');
-fs.writeFileSync('/home/claude/ledder/word/index.html',h);
+// ---- coach demo: the one demo, shared frame plus Ledder's practice board (source/demo.js). The old self-playing demo goes.
+cut('var dTok=0,dSave=null,dTm=null;',"document.querySelector('.tix').onclick");
+R(`document.querySelector('.tix').onclick`,fs.readFileSync(path.join(SRC,'demo-frame.js'),'utf8')+fs.readFileSync(path.join(SRC,'demo.js'),'utf8')+`document.querySelector('.tix').onclick`);
+R(`function metaA(s){if(dSave)return;`,`function metaA(s){`);R(`function saveA(s){if(dSave||s.busy)return;`,`function saveA(s){if(s.busy)return;`);
+R(`if(!sndOn()||dSave&&n==='tap')return;`,`if(!sndOn())return;`);R(`&&!dSave)`,`)`,true);R(`if(!dSave)card3`,`card3`,true);R(`if(s.done||dSave)return;`,`if(s.done)return;`);
+R(`$('hpD').onclick=demo;$('dx').onclick=demoEnd;`,`$('hpD').onclick=coachDemo;`);
+R(`$('ofY').onclick=function(){closeAll();demo()};`,`$('ofY').onclick=function(){closeAll();coachDemo()};`);
+R(`<div id="dm"><div id="dc"><span id="dt"></span><button id="dx">Close</button></div></div>\n`,'');
+h=h.replace(/\n#dm\{position:fixed[^\n]*/,'').replace(/\n#dc\{[^\n]*/,'').replace(/\n#dt\{flex:1[^\n]*/,'');
+R(`<button id="hpD">Demo</button>`,`<button id="hpD">Try the demo</button>`);R(`<button class="b1" id="ofY">Show me</button>`,`<button class="b1" id="ofY">Try the demo</button>`);
+R(`</style>`,fs.readFileSync(path.join(SRC,'demo-frame.css'),'utf8')+`#wsc{position:fixed;inset:0;z-index:8;display:none;align-items:center;justify-content:center;background:var(--veil);padding:16px}#wsc.show{display:flex}#wsc .pg{text-align:left;margin:8px 0}#wsc p{margin:0 0 10px;font:500 13px/1.3 var(--sans)}.wb{display:flex;gap:8px;flex:none}.wb button{flex:1 1 0;width:auto;min-width:0}
+.ldD{display:flex;flex-direction:column;gap:6px;height:100%}.ldD .tix{flex:0 0 52px;margin:0 2px 0 0}.ldFw{min-width:0;flex:1;font:700 11px/1.35 var(--sans);letter-spacing:.02em}.ldFw u{text-decoration:none;background:var(--hi);color:#1a1814;padding:0 3px;border-radius:2px}.ldFw span{font-weight:500;color:var(--ink2);letter-spacing:0}
+.ldW{flex:0 0 26px;display:flex;align-items:center;justify-content:center;font:800 20px/1 var(--sans);letter-spacing:.14em;overflow:hidden}.ldW.good{font:700 14px/1.2 var(--sans);letter-spacing:0;color:var(--ok)}
+.ldB{flex:1 1 0;min-height:0;position:relative}.ldB svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}.ldD .btns button{height:40px}.ldD .btns .off{opacity:.4;box-shadow:none}
+</style>`);
+if(/dSave|dTok|demoEnd/.test(h))throw new Error('old demo left');
+fs.writeFileSync(path.join(SRC,'..','word','index.html'),h);
