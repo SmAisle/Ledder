@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <link rel="icon" href="../icon-192.png"><link rel="apple-touch-icon" href="../icon-180.png">
-<title>Ledder Test</title>
+<title>Ledder</title>
 <meta name="theme-color" content="#f4efe1">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@500;700;800&family=Playfair+Display:ital,wght@0,900;1,900&display=swap">
 <style>
@@ -92,6 +92,9 @@ button:focus-visible{outline:2px solid var(--red);outline-offset:2px}
 .s3{font:800 30px/1 var(--sans);color:#a67c1a;letter-spacing:.06em}#st3 p{margin:8px 0 12px}.fc button.s3d{margin-top:8px;background:var(--card);color:var(--ink);border:2px solid var(--ink)}
 #wlp{flex:none;border-bottom:2px dashed var(--ink);padding-bottom:6px;margin-bottom:6px}#wlp .ln{font-size:13.5px}#wlp .ln span:first-child{color:#7a5a12}#wlp .lg{opacity:.55}
 .st,.nums b,.cm-t span,.tot{font-variant-numeric:lining-nums;font-feature-settings:"lnum" 1}
+#cvHub{position:absolute;top:calc(env(safe-area-inset-top,0px) + 8px);left:16px;font:800 13px/1.2 var(--sans);letter-spacing:.06em;color:var(--ink);background:var(--hi);border:2px solid var(--ink);border-radius:4px;padding:5px 10px;text-decoration:none;white-space:nowrap}
+.cn{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 0px);text-align:center;font:500 10px var(--sans);color:var(--fade)}
+#gt{position:fixed;inset:0;z-index:8;display:none;align-items:center;justify-content:center;background:rgba(244,239,225,.9);padding:16px}#gt.show{display:flex}
 </style>
 </head>
 <body>
@@ -102,14 +105,14 @@ button:focus-visible{outline:2px solid var(--red);outline-offset:2px}
     <div id="word"></div>
     <div id="bd"></div>
     <div class="btns" id="btns"></div>
-    <div id="ver"><button id="hpb">How to Play</button> · Ledder test v0.40 · Nov 3 · not live</div>
+    <div id="ver"><button id="hpb">How to Play</button> · Ledder v0.41 · Nov 3</div>
     <div id="rc"></div>
   </div>
 </div>
-<div id="cv"><div class="cm"><h1>Ledder</h1><p>A word path through <span id="cvt">seven</span> rows</p>
+<div id="cv"><a id="cvHub" href="https://smaisle.app/daily/">‹ smAisle Daily</a><div class="cm"><h1>Ledder</h1><p>A word path through <span id="cvt">seven</span> rows</p>
 <div class="cm-t"><span>M</span><span>A</span><span>T</span></div>
 <button id="cvP">Play</button><button id="cvH">How to Play</button></div>
-<div class="cf"><a href="https://smaisle.app/">smAisle Home</a> · v0.40 · Nov 3 · test</div></div>
+<div class="cf"><a href="https://smaisle.app/">smAisle Home</a> · v0.41 · Nov 3</div><div class="cn">Counts devices anonymously. No personal info.</div></div>
 <div id="hp"><div class="hc"><h2>How to Play Ledder</h2>
 <div class="hl"><b>Goal</b><span>Score points. Earn 3 stars.</span></div>
 <div class="hl"><b>Start</b><span>Your first word starts in the top row.</span></div>
@@ -123,6 +126,7 @@ button:focus-visible{outline:2px solid var(--red);outline-offset:2px}
 <div id="fr"><div class="fc"><small id="frw"></small><h2>Free Start</h2><p>Begin your next word on any letter, going up or down.</p><button id="frB">Pick a letter</button></div></div>
 <div id="wl"><div class="wc"><h2>Your Words</h2><div id="wlp"></div><div id="wlb"></div><div id="wlt"></div><button id="wlC">Back to game</button></div></div>
 <div id="st3"><div class="fc"><div class="s3">★★★</div><h2 id="s3h">All 3 stars!</h2><small id="s3s"></small><p id="s3m"></p><button id="s3K">Keep going</button><button id="s3D" class="s3d">Complete</button></div></div>
+<div id="gt"><div class="fc"><div class="s3">★</div><h2>Keep climbing</h2><p>That was your free look. Get the whole board, the stars and Top of the Ledder with smAisle Daily Plus.</p><button id="gtB">Get smAisle Daily Plus</button><button id="gtH" class="s3d">‹ smAisle Daily</button></div></div>
 <div id="dm"><div id="dc"><span id="dt"></span><button id="dx">Close</button></div></div>
 <div id="turn">Turn your phone upright to play</div>
 <script>
@@ -183,7 +187,7 @@ function renderA(){var s=A(),P=AP[cur.A],W=P.w,sol=PA[cur.A];
  if(s.menu&&!s.done){$('btns').innerHTML='<button id="bB">Back</button><button id="bU" class="go"'+(s.hist.length&&!s.undone?'':' disabled')+'>Undo</button><button id="bD">End</button>';$('bB').onclick=function(){s.menu=false;say(s,'');render()};$('bU').onclick=undoA;$('bD').onclick=function(){s.menu=false;s.done=true;render()}}else{
  $('btns').innerHTML='<button id="bC"'+(s.path.length>(s.anch?1:0)?'':' disabled')+'>Clear</button><button id="bS" class="go"'+(s.path.length>=3?'':' disabled')+'>'+(s.path.length&&s.path.length<3?'3+ letters':(s.warn?'Play anyway':'Submit'))+'</button><button id="bK"'+(st?' class="go"':'')+'>Stuck</button>';
  $('bC').onclick=function(){s.warn='';s.path=s.anch?[s.path[0]]:[];say(s,s.anch?'Cleared. Keep going from your last letter.':(s.found.length?'Free start. Begin on any letter.':'Pick a letter in the top row to start.'));render()};$('bS').onclick=subA;$('bK').onclick=function(){if(!s.done){s.menu=true;render()}}}
- $('rc').className=s.done?'show':'';if(s.done)receiptA();saveA(s);
+ $('rc').className=s.done?'show':'';if(s.done)receiptA();saveA(s);metaA(s);
 }
 function tapA(l,i){var s=A(),W=AP[cur.A].w,n=W.length;if(s.done||s.menu||s.busy)return;s.quiet=0;var p=s.path,last=p[p.length-1],k=-1;p.forEach(function(q,x){if(q[0]===l&&q[1]===i)k=x});
  if(isLk(s,l,i)){say(s,'Keep going from your last letter. This row is locked.','bad',1);render();return}
@@ -205,7 +209,17 @@ function freeCard(top){freeSeen=true;try{localStorage.setItem('ledder-free','1')
 function topL(){return Math.round(AP[cur.A].s[2]*1.5/5)*5}function card3(t,sc,s,m){$('s3h').textContent=t;$('s3s').textContent=sc+' points · '+s.found.length+(s.found.length===1?' word':' words');$('s3m').textContent=m;$('st3').className='show'}
 var LEFT={};function everyWord(){if(LEFT[cur.A])return LEFT[cur.A];var P=AP[cur.A],W=P.w,o={},pf=prefixes();function go(l,i,d,t){t+=P.b[l][i];if(t.length>=3&&CS.has(t))o[t]=1;if(!pf.has(t))return;var nl=l+d;if(nl<0||nl>=W.length)return;(d>0?kids(W,l,i):ups(W,l,i)).forEach(function(j){go(nl,j,d,t)})}for(var l=0;l<W.length;l++)for(var i=0;i<W[l];i++){go(l,i,1,'');go(l,i,-1,'')}return LEFT[cur.A]=o}
 function wordsLeft(s){var o=everyWord();return Object.keys(o).filter(function(w){return !s.found.some(function(f){return f.w===w})&&s.dead.indexOf(w)<0}).length}
-var SKEY='ledder-today';function saveA(s){if(dSave||s.busy)return;try{localStorage.setItem(SKEY,JSON.stringify({day:TODAY,s:{found:s.found,hist:s.hist,dead:s.dead,path:s.anch?[s.path[0]]:[],anch:s.anch,up:s.up,both:s.anch&&s.both,lock:s.lock,undone:s.undone,st:s.st,top:s.top,done:s.done,over:s.over}}))}catch(e){}}
+function isPV(){return new URLSearchParams(location.search).get('preview')==='1'&&!(window.DG_APP&&window.DG_APP.plus)||(!!window.DG_APP&&!window.DG_APP.plus)}
+function toApp(m){try{window.webkit&&webkit.messageHandlers&&webkit.messageHandlers.dg&&webkit.messageHandlers.dg.postMessage(m)}catch(e){}}
+function lsG(k,d){try{var v=localStorage.getItem(k);return v===null?d:JSON.parse(v)}catch(e){return d}}function lsP(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+function markHub(){var s=lsG('smaisle_done',{})||{},d=new Date(),day=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');s[day]=s[day]||[];if(s[day].indexOf('ld')<0)s[day].push('ld');var k=Object.keys(s).sort();while(k.length>60)delete s[k.shift()];lsP('smaisle_done',s)}
+function devId(){var id=lsG('ld-dev','');if(!id){id=Array.from(crypto.getRandomValues(new Uint8Array(12)),function(b){return 'abcdefghijklmnopqrstuvwxyz0123456789'[b%36]}).join('');lsP('ld-dev',id)}return id}
+function checkIn(kind){var u=lsG('ld-usage',{first:TODAY,days:0,last:'',opens:0,plays:0,done:0,stars:0,best:0,o:{},p:{},r:{}}),day=TODAY,s=SA[cur.A];if(u.last!==day){u.days++;u.last=day}if(kind==='open'){u.opens++;u.o[day]=(u.o[day]||0)+1}if(kind==='play'){u.plays++;u.p[day]=(u.p[day]||0)+1}if(kind==='done'){u.r=u.r||{};u.r[day]=s.st;u.done++;u.stars+=s.st;u.best=Math.max(u.best,scoreA(s))}[u.o,u.p,u.r||{}].forEach(function(m){var k=Object.keys(m).sort();while(k.length>14)delete m[k.shift()]});lsP('ld-usage',u);if(location.protocol!=='https:')return;
+ var I=function(n){return {integerValue:String(Math.round(n)||0)}},T=function(v){return {stringValue:String(v)}},Mp=function(m){return {mapValue:{fields:Object.fromEntries(Object.entries(m).map(function(e){return [e[0],I(e[1])]}))}}};
+ var body={fields:{first:T(u.first),last:T(day),days:I(u.days),v:T('0.41'),opens:I(u.opens),plays:I(u.plays),done:I(u.done),stars:I(u.stars),best:I(u.best),desk:{booleanValue:innerWidth>=820},t:I(Date.now()),o:Mp(u.o),p:Mp(u.p),r:Mp(u.r||{})}};
+ try{fetch('https://firestore.googleapis.com/v1/projects/aislerun-88e79/databases/(default)/documents/ld_devices/'+devId()+'?key=AIzaSyAlbSCTpAiK-1tojkyWrY3QuJsSzILHSfs',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),keepalive:true}).catch(function(){})}catch(e){}}
+function metaA(s){if(dSave)return;if(s.found.length&&!s.pl){s.pl=1;checkIn('play')}if((s.done||s.st>=1)&&!s.mk){s.mk=1;markHub()}if(s.done&&!s.dn){s.dn=1;checkIn('done')}if(isPV()&&s.found.length>=3&&!s.done)$('gt').className='show'}
+var SKEY='ledder-today';function saveA(s){if(dSave||s.busy)return;try{localStorage.setItem(SKEY,JSON.stringify({day:TODAY,s:{found:s.found,hist:s.hist,dead:s.dead,path:s.anch?[s.path[0]]:[],anch:s.anch,up:s.up,both:s.anch&&s.both,lock:s.lock,undone:s.undone,st:s.st,top:s.top,done:s.done,over:s.over,pl:s.pl,mk:s.mk,dn:s.dn}}))}catch(e){}}
 function undoA(){var s=A();if(s.undone||s.done||!s.hist.length)return;var h=s.hist.pop();s.undone=true;var f=s.found.pop();s.menu=false;s.quiet=1;s.dead.push(f.w);s.anch=h.anch;s.up=h.up;s.both=h.both;s.lock=h.lock;s.path=h.path;say(s,f.w+' is gone and can\'t be played again.','bad');render()}
 function subA(){if(A().busy)return;var s=A(),P=AP[cur.A],w=s.path.map(function(q){return P.b[q[0]][q[1]]}).join(''),deep=s.path[s.path.length-1][0]===P.w.length-1;
  if(!ALL.has(w))say(s,w+' is not in the word list.','bad',1);
@@ -273,9 +287,11 @@ $('s3K').onclick=function(){$('st3').className=''};$('s3D').onclick=function(){$
 $('frB').onclick=function(){$('fr').className=''};$('hpb').onclick=function(){$('hp').className='show'};$('hpC').onclick=function(){$('hp').className=''};$('hpD').onclick=demo;$('dx').onclick=demoEnd;
 function dayS(){return new Date().toLocaleDateString('en-CA',{timeZone:'America/New_York'})}
 function dayN(){return Math.floor(Date.parse(dayS()+'T00:00:00Z')/864e5)}
+$('gtB').onclick=function(){if(window.DG_APP)toApp({cmd:'plus'});else location.href='https://smaisle.app/daily/#plus'};var hubGo=function(e){if(window.DG_APP){e.preventDefault();toApp({cmd:'home'})}else{location.href='https://smaisle.app/daily/'}};$('gtH').onclick=hubGo;$('cvHub').onclick=hubGo;
 var TODAY=dayS();cur.A=dayN()%AP.length;
 (function(){try{var d=JSON.parse(localStorage.getItem(SKEY)||'null');if(d&&d.day===TODAY){SA[cur.A]=Object.assign(newA(),d.s);if(d.s.found.length||d.s.done){$('cvP').textContent=d.s.done?'See your ticket':'Continue'}}}catch(e){}})();
 document.addEventListener('visibilitychange',function(){if(!document.hidden&&dayS()!==TODAY)location.reload()});
+checkIn('open');
 $('cvP').onclick=function(){$('cv').className='off';render()};$('cvH').onclick=function(){$('hp').className='show'};
 var rz;addEventListener('resize',function(){clearTimeout(rz);rz=setTimeout(render,60)});
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(render);

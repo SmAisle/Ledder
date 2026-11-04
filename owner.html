@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Ledder Owner</title>
+<style>
+  :root{--bg:#070b1a;--paper:#121a38;--ink:#f5f7ff;--muted:#93a0c4;--line:#26315a;--hot:#ff6a2b}
+  *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+  header{position:sticky;top:0;background:var(--bg);border-bottom:1px solid var(--line);padding:12px 16px;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;z-index:2}
+  h1{font-size:1.25rem;margin:0} h1 em{font-style:normal;color:var(--hot)} main{max-width:900px;margin:0 auto;padding:16px}
+  button{font:600 .9rem inherit;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:8px;padding:6px 12px;cursor:pointer}
+  button.primary{background:var(--hot);border-color:var(--hot);color:#fff}
+  .muted{color:var(--muted)} .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-bottom:18px}
+  .stat{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+  .stat b{display:block;font-size:1.8rem;line-height:1.1;font-variant-numeric:tabular-nums}
+  .stat span{color:var(--muted);font-size:.85rem}
+  table{border-collapse:collapse;width:100%;background:var(--paper);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:14px}
+  td,th{padding:6px 10px;border-bottom:1px solid var(--line);text-align:left;font-size:.9rem;font-variant-numeric:tabular-nums} th{color:var(--muted);font-weight:600}
+  h2{font-size:1.05rem;margin:18px 0 8px}
+  .two{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+</style>
+</head>
+<body>
+<header>
+  <h1><em>Ledder</em> owner</h1>
+  <div class="row"><span id="who" class="muted"></span><button id="signin" class="primary" hidden>Sign in with Google</button><button id="signout" hidden>Sign out</button></div>
+</header>
+<main>
+  <p id="msg" class="muted">Loading…</p>
+  <section id="usage" hidden></section>
+</main>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+const FIREBASE_CONFIG = {"apiKey":"AIzaSyAlbSCTpAiK-1tojkyWrY3QuJsSzILHSfs","authDomain":"aislerun-88e79.firebaseapp.com","projectId":"aislerun-88e79","storageBucket":"aislerun-88e79.firebasestorage.app","messagingSenderId":"589354345822","appId":"1:589354345822:web:c254c32c792212af381bcf"};
+const $=s=>document.querySelector(s), esc=t=>String(t??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let DEV=[];
+firebase.initializeApp(FIREBASE_CONFIG);
+const auth=firebase.auth(), db=firebase.firestore();
+$("#signin").onclick=()=>auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(e=>{$("#msg").textContent="Sign-in didn't work: "+e.message;});
+$("#signout").onclick=()=>auth.signOut();
+auth.onAuthStateChanged(async u=>{
+  $("#signin").hidden=!!u; $("#signout").hidden=!u; $("#who").textContent=u?u.email:""; $("#usage").hidden=true;
+  if(!u){ $("#msg").textContent="Sign in with the Google account that owns Ledder to see how many devices play."; return; }
+  $("#msg").textContent="Loading…";
+  try{
+    const ds=await db.collection("ld_devices").limit(10000).get();
+    DEV=ds.docs.map(d=>({id:d.id,...d.data()}));
+    $("#msg").textContent=""; draw(); $("#usage").hidden=false;
+  }catch(e){ $("#msg").textContent = e.code==="permission-denied" ? "This account can't view usage. Only the owner can." : "Couldn't load usage: "+e.message; }
+});
+const dayStr=d=>d.toLocaleDateString("en-CA",{timeZone:"America/New_York"}), ago=n=>dayStr(new Date(Date.now()-n*864e5)), num=n=>Number(n||0).toLocaleString();
+function draw(){
+  const today=dayStr(new Date()), w=ago(6), m=ago(29), cnt=f=>DEV.filter(f).length, sum=k=>DEV.reduce((a,d)=>a+(+d[k]||0),0);
+  const tallyBy=k=>{const t={}; DEV.filter(d=>d.last>=m).forEach(d=>{const v=k==="desk"?(d.desk?"Computer":"Phone"):String(d[k]??"?"); t[v]=(t[v]||0)+1;}); return Object.entries(t).sort((a,b)=>b[1]-a[1]);};
+  const stat=(n,l)=>`<div class="stat"><b>${n}</b><span>${l}</span></div>`;
+  // o = opens per day; p = games started per day; r = stars for the day (1-3), 0 = used all 3 carts
+  const opened=d=>cnt(x=>x.o&&x.o[d]!=null), opens=d=>DEV.reduce((a,x)=>a+(x.o&&+x.o[d]||0),0);
+  const started=d=>cnt(x=>x.p&&x.p[d]!=null), done=d=>cnt(x=>x.r&&x.r[d]!=null), tr=(d,k)=>cnt(x=>x.r&&x.r[d]!=null&&+x.r[d]===k);
+  const days=[]; for(let i=0;i<14;i++){ const d=ago(i); days.push([d,opened(d),opens(d),started(d),done(d),tr(d,3),tr(d,2),tr(d,1),tr(d,0),cnt(x=>x.first===d)]); }
+  const tbl=(title,rows)=>`<div><h2>${title}</h2><table>${rows.map(([k,v])=>`<tr><td>${esc(k)}</td><td>${num(v)}</td></tr>`).join("")||`<tr><td class="muted">None yet</td><td></td></tr>`}</table></div>`;
+  $("#usage").innerHTML=`<div class="stats">${stat(opened(today),"opened today")}${stat(started(today),"played today")}${stat(tr(today,1)+tr(today,2)+tr(today,3),"checked out today")}${stat(cnt(d=>d.last>=w),"active this week")}${stat(cnt(d=>d.last>=m),"active this month")}${stat(DEV.length,"devices ever")}${stat(cnt(d=>d.first>=w),"new this week")}${stat(num(sum("plays")),"games played")}${stat(num(sum("wins")),"days checked out")+stat(num(sum("stars")),"stars earned")}</div>
+  <p class="muted">Counts phones and computers, not people. Days are Eastern time. A device checks in when it opens the game, starts today's store and finishes it, from the website version only, after agreeing to the terms. Archive days, ?store= tests and the Claude-link version aren't counted.</p>
+  <h2>Last 14 days</h2><div style="overflow-x:auto"><table><tr><th>Day</th><th>Opened</th><th>Opens</th><th>Played</th><th>Finished</th><th>3 stars</th><th>2 stars</th><th>1 star</th><th>0 stars</th><th>New</th></tr>${days.map(r=>`<tr>${r.map(v=>`<td>${esc(v)}</td>`).join("")}</tr>`).join("")}</table></div>
+  <div class="two">
+  ${tbl("Streaks, active this week",[["On a streak of 3+ days",cnt(d=>d.last>=w&&+d.streak>=3)],["On a streak of 7+ days",cnt(d=>d.last>=w&&+d.streak>=7)]])}
+  ${tbl("App version, active this month",tallyBy("v").map(([k,v])=>["Version "+k,v]))}
+  ${tbl("Device, active this month",tallyBy("desk"))}
+  </div>`;
+}
+</script>
+</body>
+</html>
