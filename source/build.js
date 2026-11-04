@@ -1,6 +1,6 @@
 const fs=require('fs');const S=process.argv[2],BF=process.argv[3];let h=fs.readFileSync('/home/claude/up/bee/bee.html','utf8');
 function R(a,b,all){const n=h.split(a).length-1;if(n<1||(!all&&n!==1))throw new Error('miss '+n+' '+a.slice(0,60));h=h.split(a).join(b)}
-const VER='1.0',VD='Nov 3';
+const VER='1.1',VD='Nov 4';
 // ---- boards
 const F=JSON.parse(fs.readFileSync(BF));
 const m=h.match(/var AP=\[.*?\],BP=\[.*?\];/);if(!m)throw 'AP';h=h.replace(m[0],()=>'var AP='+JSON.stringify(F.map(x=>({w:[5,5,5,5,5,5,5],b:x.b,s:x.s})))+',BP=[];');
