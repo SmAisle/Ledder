@@ -1,7 +1,7 @@
 // Run from anywhere: node source/build.js x source/boards.json
 const fs=require('fs'),path=require('path');const S=process.argv[2],BF=process.argv[3];const SRC=__dirname;let h=fs.readFileSync(path.join(SRC,'base.html'),'utf8');
 function R(a,b,all){const n=h.split(a).length-1;if(n<1||(!all&&n!==1))throw new Error('miss '+n+' '+a.slice(0,60));h=h.split(a).join(b)}
-const VER='1.3',VD='Nov 4';
+const VER='1.4',VD='Nov 4';
 // ---- boards
 const F=JSON.parse(fs.readFileSync(BF));
 const m=h.match(/var AP=\[.*?\],BP=\[.*?\];/);if(!m)throw 'AP';h=h.replace(m[0],()=>'var AP='+JSON.stringify(F.map(x=>({w:[5,5,5,5,5,5,5],b:x.b,s:x.s})))+',BP=[];');
@@ -90,10 +90,11 @@ R(` $('rc').className=s.done?'show':'';`,` $('rc').className=s.done&&!hideT?'sho
 R(` if(s.menu&&!s.done){$('btns')`,` if(s.done){$('btns').innerHTML='<button id="bT" class="go">See your ticket</button>';$('bT').onclick=function(){hideT=false;render()}}else if(s.menu){$('btns')`);
 // ticket
 const r0=h.indexOf('function receiptA(){'),r1=h.indexOf('\n',h.indexOf("$('rP').onclick",r0));
-h=h.slice(0,r0)+`function receiptA(){var s=A(),sol=solA(),t=scoreA(s),m=sol.common.filter(function(w){return !s.found.some(function(f){return f.w===w})}).sort(function(a,b){return b.length-a.length||(a<b?-1:1)}),fl=s.found.filter(function(f){return f.deep}).length;
+h=h.slice(0,r0)+`function missNote(d,a){var t=(d.length?'<b>Top to bottom:</b> '+d.join(', ')+'. ':'')+(a.length?'<b>Also here:</b> '+a.join(', ')+'.':'');return t?'<div class="note">'+t+'</div>':''}
+function receiptA(){var s=A(),sol=solA(),t=scoreA(s),m=sol.common.filter(function(w){return !s.found.some(function(f){return f.w===w})}).sort(function(a,b){return b.length-a.length||(a<b?-1:1)}),fl=s.found.filter(function(f){return f.deep}).length;
  var h='<div class="rcpt"><h2>Ledder</h2><div class="sub">No. '+dayNo(DAY)+' · '+shortD(DAY)+' · '+starS(t)+'</div>'+(s.top?'<div class="ln bon"><span>Top of the Ledder</span></div>':'')+(s.over?'<div class="note" style="text-align:center;margin-bottom:5px"><b>Game over.</b> No moves left from your last letter.</div>':'');
  h+=s.found.length?'<div class="note rw">'+s.found.map(function(f){return f.deep?'<b>'+f.w+'</b>':f.w}).join(' · ')+'</div>':'<div class="note">No words on this ticket.</div>';if(fl)h+='<div class="ln bon"><span>Full Lines ('+fl+')</span><i></i><span>+'+fl*DEEPB+'</span></div>';
- h+='<div class="ln tot"><span>'+s.found.length+(s.found.length===1?' word':' words')+'</span><i></i><span>'+t+'</span></div><div class="note"><b>Top to bottom:</b> '+sol.deep.slice(0,3).join(', ')+'. <b>Also here:</b> '+m.filter(function(w){return sol.deep.indexOf(w)<0}).slice(0,3).join(', ')+'.</div><div class="rb"><button id="rS" class="go">Share</button><button id="rH" class="y">‹ smAisle Daily</button><button id="rA">Archive</button><button id="rT">Stats</button><button id="rB">Back to the board</button></div><div class="note" style="text-align:center"><b>New board at midnight Eastern.</b></div><div class="more">More smAisle games<div class="mr" id="mrw"></div></div></div>';
+ h+='<div class="ln tot"><span>'+s.found.length+(s.found.length===1?' word':' words')+'</span><i></i><span>'+t+'</span></div>'+missNote(sol.deep.slice(0,3),m.filter(function(w){return sol.deep.indexOf(w)<0}).slice(0,3))+'<div class="rb"><button id="rS" class="go">Share</button><button id="rH" class="y">‹ smAisle Daily</button><button id="rA">Archive</button><button id="rT">Stats</button><button id="rB">Back to the board</button></div><div class="note" style="text-align:center"><b>New board at midnight Eastern.</b></div><div class="more">More smAisle games<div class="mr" id="mrw"></div></div></div>';
  $('rc').innerHTML=h;$('rS').onclick=function(){doShare(s,this)};$('rH').onclick=hubGo;$('rA').onclick=drawArch;$('rT').onclick=drawStats;$('rB').onclick=function(){hideT=true;render()};if(isPV())$('rA').hidden=true;moreRow()}`+h.slice(r1);
 // day setup
 const d0=h.indexOf("function dayS(){"),d1=h.indexOf("document.addEventListener('visibilitychange',function(){if(!document.hidden&&dayS()");if(d0<0||d1<0)throw 'day';
@@ -101,7 +102,15 @@ h=h.slice(0,d0)+`function dayS(){return new Date().toLocaleDateString('en-CA',{t
 var EPOCH='2026-11-03',OFF=Math.floor(Date.parse(EPOCH+'T00:00:00Z')/864e5)%5,hideT=false,showT=false;
 function dayNo(d){return Math.round((Date.parse(d+'T00:00:00Z')-Date.parse(EPOCH+'T00:00:00Z'))/864e5)+1}
 function dateOf(n){return new Date(Date.parse(EPOCH+'T00:00:00Z')+(n-1)*864e5).toISOString().slice(0,10)}
-function boardFor(n){return (OFF+n-1)%AP.length}
+/* Board order. Days 1-71 (through Jan 12, 2027) stay in the original 71-board loop.
+   Days 72-321 play the new boards once each in file order. That is pass 1.
+   From day 322 (Sep 20, 2027) each pass is a fresh shuffle of every board, worked out from the pass number alone.
+   The first NOREP days of a pass never use a board from the last NOREP days of the pass before. */
+var OLDN=71,NOREP=60,ORD={};
+function shuf(p){var n=AP.length,o=[],x=Math.imul(p,2654435761)^0x4c454444;function r(k){x=x+0x6D2B79F5|0;var t=Math.imul(x^x>>>15,1|x);t=t+Math.imul(t^t>>>7,61|t)^t;return ((t^t>>>14)>>>0)%k}for(var i=0;i<n;i++)o.push(i);for(i=n-1;i>0;i--){var j=r(i+1),t=o[i];o[i]=o[j];o[j]=t}return o}
+function passOne(){var n=AP.length,o=[];for(var i=0;i<n;i++)o.push(i<OLDN?(OFF+i)%OLDN:i);return o}
+function passOrder(p){if(ORD[p])return ORD[p];var q=2;if(!ORD[1])ORD[1]=passOne();while(ORD[q])q++;for(;q<=p;q++){var prev=ORD[q-1],n=prev.length,o=shuf(q),tail={},j=NOREP;for(var i=n-NOREP;i<n;i++)tail[prev[i]]=1;for(i=0;i<NOREP;i++)if(tail[o[i]]){while(tail[o[j]])j++;var t=o[i];o[i]=o[j];o[j]=t;j++}ORD[q]=o}return ORD[p]}
+function boardFor(n){if(n<=OLDN)return (((OFF+n-1)%OLDN)+OLDN)%OLDN;var L=AP.length,k=n-1;return passOrder(1+Math.floor(k/L))[k%L]}
 function shortD(d){return new Date(d+'T12:00:00Z').toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'UTC'})}
 var TODAY=dayS(),DAY=TODAY;cur.A=boardFor(dayNo(TODAY));
 (function(){var o=lsG('lmig',0);if(!o){lsP('lmig',1);var d=lsG('ledder-today',null);if(d&&d.day===TODAY&&d.s&&!lsG('ld-d-'+TODAY,null))lsP('ld-d-'+TODAY,d.s)}})();
