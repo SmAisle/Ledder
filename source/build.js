@@ -1,7 +1,7 @@
 // Run from anywhere: node source/build.js x source/boards.json
 const fs=require('fs'),path=require('path');const S=process.argv[2],BF=process.argv[3];const SRC=__dirname;let h=fs.readFileSync(path.join(SRC,'base.html'),'utf8');
 function R(a,b,all){const n=h.split(a).length-1;if(n<1||(!all&&n!==1))throw new Error('miss '+n+' '+a.slice(0,60));h=h.split(a).join(b)}
-const VER='1.4',VD='Nov 4';
+const VER='1.5',VD='Nov 4';
 // ---- boards
 const F=JSON.parse(fs.readFileSync(BF));
 const m=h.match(/var AP=\[.*?\],BP=\[.*?\];/);if(!m)throw 'AP';h=h.replace(m[0],()=>'var AP='+JSON.stringify(F.map(x=>({w:[5,5,5,5,5,5,5],b:x.b,s:x.s})))+',BP=[];');
@@ -62,7 +62,7 @@ html[data-mode=navy] .btns .go,html[data-mode=navy] .rb .go,html[data-mode=navy]
 </style>`);
 // ---- saving / days
 const s0=h.indexOf(`var SKEY='ledder-today';function saveA`),s1=h.indexOf(`function undoA(){`);if(s0<0||s1<0)throw 'save';
-h=h.slice(0,s0)+`function saveA(s){if(dSave||s.busy)return;lsP('ld-d-'+DAY,{found:s.found,hist:s.hist,dead:s.dead,path:s.anch?[s.path[0]]:[],anch:s.anch,up:s.up,both:s.anch&&s.both,lock:s.lock,undone:s.undone,st:s.st,top:s.top,done:s.done,over:s.over,pl:s.pl,mk:s.mk,dn:s.dn,late:s.late});if(s.found.length||s.done){var H=lsG('ld-hist',{});H[DAY]={p:scoreA(s),w:s.found.length,st:s.st,top:s.top?1:0,done:s.done?1:0,late:DAY!==TODAY&&!(H[DAY]&&!H[DAY].late)?1:(H[DAY]&&H[DAY].late||0)};lsP('ld-hist',H)}}
+h=h.slice(0,s0)+`function saveA(s){if(dSave||s.busy)return;lsP('ld-d-'+DAY,{found:s.found,hist:s.hist,dead:s.dead,path:s.anch?[s.path[0]]:[],anch:s.anch,up:s.up,both:s.anch&&s.both,lock:s.lock,undone:s.undone,st:s.st,top:s.top,miss:s.miss,ended:s.ended,done:s.done,over:s.over,pl:s.pl,mk:s.mk,dn:s.dn,late:s.late});if(s.found.length||s.done){var H=lsG('ld-hist',{});H[DAY]={p:scoreA(s),w:s.found.length,st:s.st,top:s.top?1:0,done:s.done?1:0,late:DAY!==TODAY&&!(H[DAY]&&!H[DAY].late)?1:(H[DAY]&&H[DAY].late||0)};lsP('ld-hist',H)}}
 function loadDay(d){var o=lsG('ld-d-'+d,null);return o?Object.assign(newA(),o):newA()}
 function openDay(d){DAY=d;cur.A=boardFor(dayNo(d));SA[cur.A]=loadDay(d);hideT=false;showT=false;$('cv').className='off';closeAll();render();render()}
 function closeAll(){['mn','se','ar','sa','hp','wl','tm','of'].forEach(function(i){$(i).className=$(i).className.replace(/ ?show/,'')})}
@@ -92,7 +92,7 @@ R(` if(s.menu&&!s.done){$('btns')`,` if(s.done){$('btns').innerHTML='<button id=
 const r0=h.indexOf('function receiptA(){'),r1=h.indexOf('\n',h.indexOf("$('rP').onclick",r0));
 h=h.slice(0,r0)+`function missNote(d,a){var t=(d.length?'<b>Top to bottom:</b> '+d.join(', ')+'. ':'')+(a.length?'<b>Also here:</b> '+a.join(', ')+'.':'');return t?'<div class="note">'+t+'</div>':''}
 function receiptA(){var s=A(),sol=solA(),t=scoreA(s),m=sol.common.filter(function(w){return !s.found.some(function(f){return f.w===w})}).sort(function(a,b){return b.length-a.length||(a<b?-1:1)}),fl=s.found.filter(function(f){return f.deep}).length;
- var h='<div class="rcpt"><h2>Ledder</h2><div class="sub">No. '+dayNo(DAY)+' · '+shortD(DAY)+' · '+starS(t)+'</div>'+(s.top?'<div class="ln bon"><span>Top of the Ledder</span></div>':'')+(s.over?'<div class="note" style="text-align:center;margin-bottom:5px"><b>Game over.</b> No moves left from your last letter.</div>':'');
+ var h='<div class="rcpt"><h2>Ledder</h2><div class="sub">No. '+dayNo(DAY)+' · '+shortD(DAY)+' · '+starS(t)+'</div>'+(s.top?'<div class="ln bon"><span>Top of the Ledder</span></div>':'')+(s.ended?'<div class="note" style="text-align:center;margin-bottom:5px">'+(s.miss?'You could have played <b>'+s.miss+'</b>.':'No word could be played from your last letter.')+'</div>':'')+(s.over?'<div class="note" style="text-align:center;margin-bottom:5px"><b>Game over.</b> No moves left from your last letter.</div>':'');
  h+=s.found.length?'<div class="note rw">'+s.found.map(function(f){return f.deep?'<b>'+f.w+'</b>':f.w}).join(' · ')+'</div>':'<div class="note">No words on this ticket.</div>';if(fl)h+='<div class="ln bon"><span>Full Lines ('+fl+')</span><i></i><span>+'+fl*DEEPB+'</span></div>';
  h+='<div class="ln tot"><span>'+s.found.length+(s.found.length===1?' word':' words')+'</span><i></i><span>'+t+'</span></div>'+missNote(sol.deep.slice(0,3),m.filter(function(w){return sol.deep.indexOf(w)<0}).slice(0,3))+'<div class="rb"><button id="rS" class="go">Share</button><button id="rH" class="y">‹ smAisle Daily</button><button id="rA">Archive</button><button id="rT">Stats</button><button id="rB">Back to the board</button></div><div class="note" style="text-align:center"><b>New board at midnight Eastern.</b></div><div class="more">More smAisle games<div class="mr" id="mrw"></div></div></div>';
  $('rc').innerHTML=h;$('rS').onclick=function(){doShare(s,this)};$('rH').onclick=hubGo;$('rA').onclick=drawArch;$('rT').onclick=drawStats;$('rB').onclick=function(){hideT=true;render()};if(isPV())$('rA').hidden=true;moreRow()}`+h.slice(r1);
@@ -149,7 +149,7 @@ R(`say(s,f.w+' is gone and can\\'t be played again.','bad');render()}`,`say(s,f.
 R(`<div class="pop" id="of">`,`<div class="pop" id="sk"><div class="sc" style="text-align:center"><h2 id="skH"></h2><p id="skM"></p><button class="b1" id="skU"></button><button id="skE">End the game</button><button id="skC">Keep playing</button></div></div>
 <div class="pop" id="ud"><div class="sc" style="text-align:center"><h2 id="udH"></h2><p id="udM"></p><button class="b1" id="udO">Got it</button></div></div>
 <div class="pop" id="of">`);
-R(`$('mb').onclick=function(){sheet('mn')};`,`$('skU').onclick=function(){$('sk').className='pop';undoA()};$('skE').onclick=function(){$('sk').className='pop';A().done=true;render()};$('skC').onclick=function(){$('sk').className='pop'};$('udO').onclick=function(){$('ud').className='pop'};
+R(`$('mb').onclick=function(){sheet('mn')};`,`$('skU').onclick=function(){$('sk').className='pop';undoA()};$('skE').onclick=function(){$('sk').className='pop';var s=A();s.miss=missWord(s);s.ended=1;s.done=true;render()};$('skC').onclick=function(){$('sk').className='pop'};$('udO').onclick=function(){$('ud').className='pop'};
 $('mb').onclick=function(){sheet('mn')};`);
 R(`#dm{position:fixed;inset:0;z-index:6;`,`#dm{position:fixed;inset:0;z-index:9;`);
 R(`</style>`,`#word.m{font-size:14px}#word.m.bad{background:var(--red);color:#fff;font:700 15px/1.2 var(--sans);letter-spacing:0;border-radius:6px;padding:0 10px;margin:0 2px;animation:errIn .2s ease-out}#word.m.bad.sh{animation:errIn .2s ease-out,sh .28s}@keyframes errIn{from{opacity:0;transform:translateY(4px)}}
