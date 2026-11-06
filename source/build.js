@@ -1,7 +1,7 @@
 // Run from anywhere: node source/build.js x source/boards.json
 const fs=require('fs'),path=require('path');const S=process.argv[2],BF=process.argv[3];const SRC=__dirname;let h=fs.readFileSync(path.join(SRC,'base.html'),'utf8');
 function R(a,b,all){const n=h.split(a).length-1;if(n<1||(!all&&n!==1))throw new Error('miss '+n+' '+a.slice(0,60));h=h.split(a).join(b)}
-const VER='1.8',VD='Nov 6';
+const VER='1.9',VD='Nov 6';
 // ---- boards
 const F=JSON.parse(fs.readFileSync(BF));
 const m=h.match(/var AP=\[.*?\],BP=\[.*?\];/);if(!m)throw 'AP';const F8=JSON.parse(fs.readFileSync(path.join(SRC,'boards8.json')));
@@ -178,5 +178,18 @@ R(`</style>`,fs.readFileSync(path.join(SRC,'demo-frame.css'),'utf8')+`#wsc{posit
 .ldB{flex:1 1 0;min-height:0;position:relative}.ldB svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}.ldD .btns button{height:40px}.ldD .btns .off{opacity:.4;box-shadow:none}
 </style>`);
 if(/dSave|dTok|demoEnd/.test(h))throw new Error('old demo left');
+/* Fixed preview (Jeff, Nov 6): a free player in the app (or ?preview=1 without Plus) always gets the same board, the first 6 x 8 board (No. 5, Nov 7, CALENDAR), fresh every time. Nothing is saved, no check-ins, no hub done mark. */
+R(`var TODAY=dayS(),DAY=TODAY;`,`var PVM=isPV(),TODAY=dayS(),DAY=TODAY;`);
+R(`function boardFor(n){`,`function boardFor(n){if(PVM)return OB;`);
+R(`function loadDay(d){`,`function loadDay(d){if(PVM)return newA();`);
+R(`function saveA(s){if(s.busy)return;`,`function saveA(s){if(s.busy||PVM)return;`);
+R(`function metaA(s){if(DAY===TODAY){`,`function metaA(s){if(DAY===TODAY&&!PVM){`);
+R(`$('dy').textContent=(DAY===TODAY?'':'No. '+dayNo(DAY)+' · ')+shortD(DAY);`,`$('dy').textContent=PVM?'Preview':(DAY===TODAY?'':'No. '+dayNo(DAY)+' · ')+shortD(DAY);`);
+R(`$('cvD').textContent=new Date(TODAY`,`$('cvD').textContent=PVM?'Free preview':new Date(TODAY`);
+R(`$('cvN').textContent='No. '+n;`,`$('cvN').textContent=PVM?'Preview game':'No. '+n;`);
+R(`<p>That was your free look. Get the whole board, the stars and Top of the Ledder with smAisle Daily Plus.</p><button id="gtB">Get smAisle Daily Plus</button><button id="gtH" class="s3d">‹ smAisle Daily</button>`,`<p>That was your free look. Play a new one every day with smAisle Daily Plus.</p><button id="gtB">Get smAisle Daily Plus</button><button id="gtR" class="s3d">Play the preview again</button><button id="gtH" class="s3d">‹ smAisle Daily</button>`);
+R(`$('mP').onclick=function(){`,`$('gtB').onclick=function(){if(window.DG_APP)toApp({cmd:'plus'});else location.href='https://smaisle.app/daily/'};$('gtH').onclick=hubGo;$('gtR').onclick=function(){location.reload()};
+window.dgNative=function(k,o){if(k==='store'&&o){window.DG_APP=window.DG_APP||{};var was=PVM;window.DG_APP.plus=!!o.plus;if(was&&o.plus)location.reload()}};
+$('mP').onclick=function(){`);
 R(`</style>`,`html:not(.a8) .w8,html.a8 .w7{display:none!important}\n</style><script>if(window.SMD_APP)document.documentElement.classList.add('a8')</script>`);
 fs.writeFileSync(path.join(SRC,'..','word','index.html'),h);
