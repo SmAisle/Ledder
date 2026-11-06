@@ -121,13 +121,13 @@ button:focus-visible{outline:2px solid var(--red);outline-offset:2px}
 <div class="hl"><b>Spell</b><span>Move one row at a time, to a letter straight ahead or one tile over.</span></div>
 <div class="hl"><b>Next word</b><span>Starts on your last letter. The rest of that row locks.<br>Rows 3 to 5: go up or down.<br>Rows 2 and 6: turn back.</span></div>
 <div class="hl"><b>Free start</b><span>Reach the top or bottom row. Your next word can start on any letter.</span></div>
-<div class="hl"><b>Points</b><span class="pg"><i>3 letters <u>1</u></i><i>4 letters <u>5</u></i><i>5 letters <u>8</u></i><i>6 letters <u>12</u></i><i>7 letters <u>17</u></i><i>All 7 rows <u>+20</u></i></span></div>
+<div class="hl"><b>Points</b><span class="pg"><i>3 letters <u>1</u></i><i>4 letters <u>5</u></i><i>5 letters <u>8</u></i><i>6 letters <u>12</u></i><i>7 letters <u>17</u></i><i>8 letters <u>23</u></i><i>All 8 rows <u>+20</u></i></span></div>
 <div class="hn">Easy endings like -S, -ED and -ING score less.</div>
 <div class="hl"><b>Stuck?</b><span>You get one Undo a day. The undone word is gone. Or End the game.</span></div>
 <div class="rb"><button id="hpD">Demo</button><button id="hpC" class="go">Got it</button></div></div></div>
 <div id="fr"><div class="fc"><small id="frw"></small><h2>Free Start</h2><p>Begin your next word on any letter, going up or down.</p><button id="frB">Pick a letter</button></div></div>
 <div id="wl"><div class="wc"><h2>Your Words</h2><div id="wlp"></div><div id="wlb"></div><div id="wlt"></div><div class="wb"><button id="wlS">Scoring</button><button id="wlC">Back to game</button></div></div></div>
-<div id="wsc"><div class="fc"><h2>Scoring</h2><div class="pg"><i>3 letters <u>1</u></i><i>4 letters <u>5</u></i><i>5 letters <u>8</u></i><i>6 letters <u>12</u></i><i>7 letters <u>17</u></i><i>All 7 rows <u>+20</u></i></div><p>Easy endings like -S, -ED and -ING score one letter less.</p><button id="wsC">Close</button></div></div>
+<div id="wsc"><div class="fc"><h2>Scoring</h2><div class="pg"><i>3 letters <u>1</u></i><i>4 letters <u>5</u></i><i>5 letters <u>8</u></i><i>6 letters <u>12</u></i><i>7 letters <u>17</u></i><i>8 letters <u>23</u></i><i>All 8 rows <u>+20</u></i></div><p>Easy endings like -S, -ED and -ING score one letter less.</p><button id="wsC">Close</button></div></div>
 <div id="st3"><div class="fc"><div class="s3">★★★</div><h2 id="s3h">All 3 stars!</h2><small id="s3s"></small><p id="s3m"></p><button id="s3K">Keep going</button><button id="s3D" class="s3d">Complete</button></div></div>
 <div id="gt"><div class="fc"><div class="s3">★</div><h2>Keep climbing</h2><p>That was your free look. Get the whole board, the stars and Top of the Ledder with smAisle Daily Plus.</p><button id="gtB">Get smAisle Daily Plus</button><button id="gtH" class="s3d">‹ smAisle Daily</button></div></div>
 <div id="dm"><div id="dc"><span id="dt"></span><button id="dx">Close</button></div></div>
@@ -140,7 +140,7 @@ var ODD='ARS ATT BAS BOS BUR ENG ESS HES KOS LIS ORA RAS SRI TAS WAT'.split(' ')
 var stars=function(p){var a=SA[cur.A];return Math.max(AP[cur.A].s.filter(function(t){return p>=t}).length,a&&a.st||0)},starS=function(p){var k=stars(p);return '★★★'.slice(0,k)+'☆☆☆'.slice(0,3-k)},DEEPB=20,CLEARB=15,CS=new Set(COMMON),ALL=new Set(COMMON.concat(EXTRA));
 function infl(w){var h=function(x){return ALL.has(x)};return (w.slice(-1)==='S'&&h(w.slice(0,-1)))||(w.slice(-2)==='ES'&&h(w.slice(0,-2)))||((w.slice(-2)==='ED'||w.slice(-2)==='ER')&&(h(w.slice(0,-1))||h(w.slice(0,-2))))||(w.slice(-3)==='ING'&&(h(w.slice(0,-3))||h(w.slice(0,-3)+'E')))}
 function $(i){return document.getElementById(i)}
-function pts(n){return {3:1,4:5,5:8,6:12,7:17}[n]||17+(n-7)*6}
+function pts(n){return {3:1,4:5,5:8,6:12,7:17,8:23}[n]||17+(n-7)*6}
 function kids(W,l,i){if(l+1>=W.length)return [];var k=[i-1,i,i+1];return k.filter(function(j){return j>=0&&j<W[l+1]})}
 function trk(a,b,on){return '<line x1="'+a[0]+'" y1="'+a[1]+'" x2="'+b[0]+'" y2="'+b[1]+'" stroke="'+(on?'#e8a817':'#b9ae95')+'" stroke-width="'+(on?5:2)+'" stroke-linecap="round"/>'}
 /* Solvers. Both run in the page on load, so the five puzzles are checked by the same code the game uses. */
@@ -275,7 +275,7 @@ function demo(){$('hp').className='';dSave={s:SA[0],c:cur.A,m:mode,cv:$('cv').cl
  ['w',[[4,1],[5,1],[6,1]]],
  ['t','You reached the bottom row, so your next word can start on any letter.',800],
  ['w',[[3,1],[4,2],[5,3],[6,4]]],
- ['t','A word through all 7 rows is a Full Line, worth 20 extra points.',800],
+ ['t','A word through all 8 rows is a Full Line, worth 20 extra points.',800],
  ['w',[[0,4],[1,4],[2,3],[3,2],[4,2],[5,3],[6,2]]],
  ['f',function(){A().menu=true;render()}],
  ['t','If you get stuck, tap Stuck. You get one Undo a day, or you can End the game.',4200],
@@ -299,7 +299,7 @@ checkIn('open');
 $('cvP').onclick=function(){$('cv').className='off';render()};$('cvH').onclick=function(){$('hp').className='show'};
 var rz;addEventListener('resize',function(){clearTimeout(rz);rz=setTimeout(render,60)});
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(render);
-window.WT={report:{A:PA.map(function(p,i){return {all:p.all.length,common:p.common.length,deep:p.deep,ok:p.common.length>=25&&p.deep.length>0&&AP[i].w.length>=5&&AP[i].w.length<=7}}),B:PB.map(function(b){return {best:b.w,score:b.p,left:b.left,ok:b.left<=2}})},PA:PA,PB:PB,BCAND:BCAND,AP:AP,BP:BP,get:function(){return mode==='A'?A():B()},kids:kids};
+window.WT={report:{A:PA.map(function(p,i){return {all:p.all.length,common:p.common.length,deep:p.deep,ok:p.common.length>=25&&p.deep.length>0&&AP[i].w.length>=5&&AP[i].w.length<=8}}),B:PB.map(function(b){return {best:b.w,score:b.p,left:b.left,ok:b.left<=2}})},PA:PA,PB:PB,BCAND:BCAND,AP:AP,BP:BP,get:function(){return mode==='A'?A():B()},kids:kids};
 WT.report.A.concat(WT.report.B).forEach(function(r,i){if(!r.ok)console.error('Puzzle check failed',i)});
 render();
 </script>

@@ -1,10 +1,13 @@
 // Run from anywhere: node source/build.js x source/boards.json
 const fs=require('fs'),path=require('path');const S=process.argv[2],BF=process.argv[3];const SRC=__dirname;let h=fs.readFileSync(path.join(SRC,'base.html'),'utf8');
 function R(a,b,all){const n=h.split(a).length-1;if(n<1||(!all&&n!==1))throw new Error('miss '+n+' '+a.slice(0,60));h=h.split(a).join(b)}
-const VER='1.7',VD='Nov 4';
+const VER='1.8',VD='Nov 6';
 // ---- boards
 const F=JSON.parse(fs.readFileSync(BF));
-const m=h.match(/var AP=\[.*?\],BP=\[.*?\];/);if(!m)throw 'AP';h=h.replace(m[0],()=>'var AP='+JSON.stringify(F.map(x=>({w:[5,5,5,5,5,5,5],b:x.b,s:x.s})))+',BP=[];');
+const m=h.match(/var AP=\[.*?\],BP=\[.*?\];/);if(!m)throw 'AP';const F8=JSON.parse(fs.readFileSync(path.join(SRC,'boards8.json')));
+h=h.replace(m[0],()=>'var AP='+JSON.stringify(F.map(x=>({w:[5,5,5,5,5,5,5],b:x.b,s:x.s})).concat(F8.map(x=>({w:[6,6,6,6,6,6,6,6],b:x.b,s:x.s}))))+',BP=[];');
+const E8=fs.readFileSync(path.join(SRC,'tune/w8/everyday8.txt'),'utf8').trim().split('\n').map(l=>l.split(' ')[0]).join(' ');
+if(h.indexOf('var COMMON="')<0)throw new Error('no COMMON');h=h.replace('var COMMON="',()=>'var COMMON="'+E8+' ');
 // ---- strip shelf game
 const cut=(a,b)=>{const i=h.indexOf(a),j=h.indexOf(b,i);if(i<0||j<0)throw new Error('cut '+a);h=h.slice(0,i)+h.slice(j)};
 cut('function cnt(s){','function ups(W,l,i)'.length?'var PA=AP.map':'');
@@ -28,7 +31,7 @@ R(`<title>Ledder</title>`,`<title>Ledder</title>
 R(`<div class="nums2" id="pn"></div>`,`<div class="tr"><span id="dy"></span><button class="nb" id="mb" aria-label="Menu">☰</button></div>`);
 h=h.replace(/\s*<div id="ver">.*?<\/div>\n/,'\n');
 const a0=h.indexOf('<div id="cv">'),a1=h.indexOf('<div id="hp">');
-h=h.slice(0,a0)+`<div id="cv"><a id="cvHub" href="https://smaisle.app/daily/">‹ smAisle Daily</a><div class="cm"><h1>Ledder</h1><div class="cd"><span id="cvD"></span><span id="cvN"></span></div><p>A word path through seven rows</p>
+h=h.slice(0,a0)+`<div id="cv"><a id="cvHub" href="https://smaisle.app/daily/">‹ smAisle Daily</a><div class="cm"><h1>Ledder</h1><div class="cd"><span id="cvD"></span><span id="cvN"></span></div><p>A word path through eight rows</p>
 <div class="cm-t"><span>M</span><span>A</span><span>T</span></div>
 <div id="cvS"></div><button id="cvP">Play today's board</button><div class="lnks"><button id="cvA">Archive</button><button id="cvT">Stats</button><button id="cvH">How to Play</button></div></div>
 <div class="cf"><a href="https://smaisle.app/">smAisle Home</a> · v${VER} · ${VD}</div></div>
@@ -106,11 +109,13 @@ function dateOf(n){return new Date(Date.parse(EPOCH+'T00:00:00Z')+(n-1)*864e5).t
    Days 72-321 play the new boards once each in file order. That is pass 1.
    From day 322 (Sep 20, 2027) each pass is a fresh shuffle of every board, worked out from the pass number alone.
    The first NOREP days of a pass never use a board from the last NOREP days of the pass before. */
-var OLDN=71,NOREP=60,ORD={};
-function shuf(p){var n=AP.length,o=[],x=Math.imul(p,2654435761)^0x4c454444;function r(k){x=x+0x6D2B79F5|0;var t=Math.imul(x^x>>>15,1|x);t=t+Math.imul(t^t>>>7,61|t)^t;return ((t^t>>>14)>>>0)%k}for(var i=0;i<n;i++)o.push(i);for(i=n-1;i>0;i--){var j=r(i+1),t=o[i];o[i]=o[j];o[j]=t}return o}
-function passOne(){var n=AP.length,o=[];for(var i=0;i<n;i++)o.push(i<OLDN?(OFF+i)%OLDN:i);return o}
+var OLDN=71,NOREP=60,ORD={},OB=${F.length},NEW8=5,N8=${F8.length},ORD8={};
+function shuf(p,n){n=n||OB;var o=[],x=Math.imul(p,2654435761)^0x4c454444;function r(k){x=x+0x6D2B79F5|0;var t=Math.imul(x^x>>>15,1|x);t=t+Math.imul(t^t>>>7,61|t)^t;return ((t^t>>>14)>>>0)%k}for(var i=0;i<n;i++)o.push(i);for(i=n-1;i>0;i--){var j=r(i+1),t=o[i];o[i]=o[j];o[j]=t}return o}
+function passOne(){var n=OB,o=[];for(var i=0;i<n;i++)o.push(i<OLDN?(OFF+i)%OLDN:i);return o}
 function passOrder(p){if(ORD[p])return ORD[p];var q=2;if(!ORD[1])ORD[1]=passOne();while(ORD[q])q++;for(;q<=p;q++){var prev=ORD[q-1],n=prev.length,o=shuf(q),tail={},j=NOREP;for(var i=n-NOREP;i<n;i++)tail[prev[i]]=1;for(i=0;i<NOREP;i++)if(tail[o[i]]){while(tail[o[j]])j++;var t=o[i];o[i]=o[j];o[j]=t;j++}ORD[q]=o}return ORD[p]}
-function boardFor(n){if(n<=OLDN)return (((OFF+n-1)%OLDN)+OLDN)%OLDN;var L=AP.length,k=n-1;return passOrder(1+Math.floor(k/L))[k%L]}
+/* From No. 5 (Nov 7, 2026) every day uses the 6 x 8 boards, each built around one hidden 8-letter word. Pass 1 is file order, then each pass is a fresh shuffle with the same no-repeat rule. Days 1-4 keep their 5 x 7 boards. */
+function order8(p){if(ORD8[p])return ORD8[p];var q=2;if(!ORD8[1]){var a=[];for(var i=0;i<N8;i++)a.push(i);ORD8[1]=a}while(ORD8[q])q++;for(;q<=p;q++){var prev=ORD8[q-1],n=N8,o=shuf(q+7000,N8),tail={},j=NOREP;for(i=n-NOREP;i<n;i++)tail[prev[i]]=1;for(i=0;i<NOREP;i++)if(tail[o[i]]){while(tail[o[j]])j++;var t=o[i];o[i]=o[j];o[j]=t;j++}ORD8[q]=o}return ORD8[p]}
+function boardFor(n){if(n>=NEW8){var k=n-NEW8;return OB+order8(1+Math.floor(k/N8))[k%N8]}if(n<=OLDN)return (((OFF+n-1)%OLDN)+OLDN)%OLDN;var L=OB,k=n-1;return passOrder(1+Math.floor(k/L))[k%L]}
 function shortD(d){return new Date(d+'T12:00:00Z').toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'UTC'})}
 var TODAY=dayS(),DAY=TODAY;cur.A=boardFor(dayNo(TODAY));
 (function(){var o=lsG('lmig',0);if(!o){lsP('lmig',1);var d=lsG('ledder-today',null);if(d&&d.day===TODAY&&d.s&&!lsG('ld-d-'+TODAY,null))lsP('ld-d-'+TODAY,d.s)}})();
