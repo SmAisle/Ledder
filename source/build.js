@@ -1,7 +1,7 @@
 // Run from anywhere: node source/build.js x source/boards.json
 const fs=require('fs'),path=require('path');const S=process.argv[2],BF=process.argv[3];const SRC=__dirname;let h=fs.readFileSync(path.join(SRC,'base.html'),'utf8');
 function R(a,b,all){const n=h.split(a).length-1;if(n<1||(!all&&n!==1))throw new Error('miss '+n+' '+a.slice(0,60));h=h.split(a).join(b)}
-const VER='1.9',VD='Nov 6';
+const VER='1.10',VD='Nov 6';
 // ---- boards
 const F=JSON.parse(fs.readFileSync(BF));
 const m=h.match(/var AP=\[.*?\],BP=\[.*?\];/);if(!m)throw 'AP';const F8=JSON.parse(fs.readFileSync(path.join(SRC,'boards8.json')));
@@ -192,4 +192,9 @@ R(`$('mP').onclick=function(){`,`$('gtB').onclick=function(){if(window.DG_APP)to
 window.dgNative=function(k,o){if(k==='store'&&o){window.DG_APP=window.DG_APP||{};var was=PVM;window.DG_APP.plus=!!o.plus;if(was&&o.plus)location.reload()}};
 $('mP').onclick=function(){`);
 R(`</style>`,`html:not(.a8) .w8,html.a8 .w7{display:none!important}\n</style><script>if(window.SMD_APP)document.documentElement.classList.add('a8')</script>`);
+/* Ghosted PREVIEW across the screen in the free preview (Jeff, Nov 6). */
+R(`</body>`,`<style>.pvGhost{position:fixed;inset:0;display:none;align-items:center;justify-content:center;pointer-events:none;z-index:40;overflow:hidden;color:inherit}.pvGhost.on{display:flex}.pvGhost span{font:900 25vw/1 system-ui,-apple-system,sans-serif;letter-spacing:.05em;opacity:.08;transform:rotate(-28deg);white-space:nowrap;user-select:none;-webkit-user-select:none}@media(min-width:520px){.pvGhost span{font-size:130px}}</style>
+<div class="pvGhost" aria-hidden="true"><span>PREVIEW</span></div>
+<script>(function(){var g=document.querySelector('.pvGhost');function t(){try{g.classList.toggle('on',!!PVM)}catch(e){}}t();setInterval(t,700)})()</script>
+</body>`);
 fs.writeFileSync(path.join(SRC,'..','word','index.html'),h);
