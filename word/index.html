@@ -129,7 +129,8 @@ html[data-mode=navy] .btns .go,html[data-mode=navy] .rb .go,html[data-mode=navy]
 .ldD{display:flex;flex-direction:column;gap:6px;height:100%}.ldD .tix{flex:0 0 52px;margin:0 2px 0 0}.ldFw{min-width:0;flex:1;font:700 11px/1.35 var(--sans);letter-spacing:.02em}.ldFw u{text-decoration:none;background:var(--hi);color:#1a1814;padding:0 3px;border-radius:2px}.ldFw span{font-weight:500;color:var(--ink2);letter-spacing:0}
 .ldW{flex:0 0 26px;display:flex;align-items:center;justify-content:center;font:800 20px/1 var(--sans);letter-spacing:.14em;overflow:hidden}.ldW.good{font:700 14px/1.2 var(--sans);letter-spacing:0;color:var(--ok)}
 .ldB{flex:1 1 0;min-height:0;position:relative}.ldB svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}.ldD .btns button{height:40px}.ldD .btns .off{opacity:.4;box-shadow:none}
-</style>
+html:not(.a8) .w8,html.a8 .w7{display:none!important}
+</style><script>if(window.SMD_APP)document.documentElement.classList.add('a8')</script>
 </head>
 <body>
 <div id="app">
@@ -142,7 +143,7 @@ html[data-mode=navy] .btns .go,html[data-mode=navy] .rb .go,html[data-mode=navy]
     <div id="rc"></div>
   </div>
 </div>
-<div id="cv"><a id="cvHub" href="https://smaisle.app/daily/">‹ smAisle Daily</a><div class="cm"><h1>Ledder</h1><div class="cd"><span id="cvD"></span><span id="cvN"></span></div><p>A word path through eight rows</p>
+<div id="cv"><a id="cvHub" href="https://smaisle.app/daily/">‹ smAisle Daily</a><div class="cm"><h1>Ledder</h1><div class="cd"><span id="cvD"></span><span id="cvN"></span></div><p>A word path through <span class="w7">seven</span><span class="w8">eight</span> rows</p>
 <div class="cm-t"><span>M</span><span>A</span><span>T</span></div>
 <div id="cvS"></div><button id="cvP">Play today's board</button><div class="lnks"><button id="cvA">Archive</button><button id="cvT">Stats</button><button id="cvH">How to Play</button></div></div>
 <div class="cf"><a href="https://smaisle.app/">smAisle Home</a> · v1.8 · Nov 6</div></div>
@@ -160,13 +161,13 @@ html[data-mode=navy] .btns .go,html[data-mode=navy] .rb .go,html[data-mode=navy]
 <div class="hl"><b>Spell</b><span>Move one row at a time, to a letter straight ahead or one tile over.</span></div>
 <div class="hl"><b>Next word</b><span>Starts on your last letter. The rest of that row locks.<br>Rows 3 to 5: go up or down.<br>Rows 2 and 6: turn back.</span></div>
 <div class="hl"><b>Unlock</b><span>Reach the top or bottom row to unlock the board. Your next word can start on any letter.</span></div>
-<div class="hl"><b>Points</b><span class="pg"><i>3 letters <u>1</u></i><i>4 letters <u>5</u></i><i>5 letters <u>8</u></i><i>6 letters <u>12</u></i><i>7 letters <u>17</u></i><i>8 letters <u>23</u></i><i>All 8 rows <u>+20</u></i></span></div>
+<div class="hl"><b>Points</b><span class="pg"><i>3 letters <u>1</u></i><i>4 letters <u>5</u></i><i>5 letters <u>8</u></i><i>6 letters <u>12</u></i><i>7 letters <u>17</u></i><i class="w8">8 letters <u>23</u></i><i>All <span class="w7">7</span><span class="w8">8</span> rows <u>+20</u></i></span></div>
 <div class="hn">Easy endings like -S, -ED and -ING score less.</div>
 <div class="hl"><b>Stuck?</b><span>You get one Undo a day. The undone word is gone. Or End the game.</span></div>
 <div class="rb"><button id="hpD">Try the demo</button><button id="hpC" class="go">Got it</button></div></div></div>
 <div id="fr"><div class="fc"><small id="frw"></small><h2>Board Unlocked</h2><p>Your next word can start on any letter, going up or down.</p><button id="frB">Pick a letter</button></div></div>
 <div id="wl"><div class="wc"><h2>Your Words</h2><div id="wlp"></div><div id="wlb"></div><div id="wlt"></div><div class="wb"><button id="wlS">Scoring</button><button id="wlC">Back to game</button></div></div></div>
-<div id="wsc"><div class="fc"><h2>Scoring</h2><div class="pg"><i>3 letters <u>1</u></i><i>4 letters <u>5</u></i><i>5 letters <u>8</u></i><i>6 letters <u>12</u></i><i>7 letters <u>17</u></i><i>8 letters <u>23</u></i><i>All 8 rows <u>+20</u></i></div><p>Easy endings like -S, -ED and -ING score one letter less.</p><button id="wsC">Close</button></div></div>
+<div id="wsc"><div class="fc"><h2>Scoring</h2><div class="pg"><i>3 letters <u>1</u></i><i>4 letters <u>5</u></i><i>5 letters <u>8</u></i><i>6 letters <u>12</u></i><i>7 letters <u>17</u></i><i class="w8">8 letters <u>23</u></i><i>All <span class="w7">7</span><span class="w8">8</span> rows <u>+20</u></i></div><p>Easy endings like -S, -ED and -ING score one letter less.</p><button id="wsC">Close</button></div></div>
 <div id="st3"><div class="fc"><div class="s3">★★★</div><h2 id="s3h">All 3 stars!</h2><small id="s3s"></small><p id="s3m"></p><button id="s3K">Keep going</button><button id="s3D" class="s3d">Complete</button></div></div>
 <div id="gt"><div class="fc"><div class="s3">★</div><h2>Keep climbing</h2><p>That was your free look. Get the whole board, the stars and Top of the Ledder with smAisle Daily Plus.</p><button id="gtB">Get smAisle Daily Plus</button><button id="gtH" class="s3d">‹ smAisle Daily</button><button id="gtC" class="s3d" hidden>Back to the menu</button></div></div>
 <div id="turn">Turn your phone upright to play</div>
@@ -311,23 +312,24 @@ function smDemo(o){
  run();return {close:close}}
 /* Try it with a coach: three real moves on a tiny practice board. It draws only inside the demo frame, so it saves nothing, counts nothing and leaves today's game alone. */
 function ldBoard(stage){
- var W=[6,6,6,6,6,6,6,6],R=['BCRPSH','LOAATH','EILTPR','DASETE','RMENAT','PUDIEG','YNASKO','WRTBLE'],CAT=[[0,1],[1,2],[2,3]],FULL=[[0,1],[1,2],[2,2],[3,3],[4,3],[5,2],[6,2],[7,1]];
+ /* 6 x 8 board in the smAisle Daily app (window.SMD_APP), 5 x 7 on the website (Jeff, Nov 6). */
+ var B8=!!window.SMD_APP,NC=B8?6:5,NR=B8?8:7,W=B8?[6,6,6,6,6,6,6,6]:[5,5,5,5,5,5,5],R=B8?['BCRPSH','LOAATH','EILTPR','DASETE','RMENAT','PUDIEG','YNASKO','WRTBLE']:['BCRPS','LOATH','EITPR','DASTE','RMEAT','PUIEG','YNSAK'],CAT=B8?[[0,1],[1,2],[2,3]]:[[0,1],[1,2],[2,2]],FULL=B8?[[0,1],[1,2],[2,2],[3,3],[4,3],[5,2],[6,2],[7,1]]:[[0,1],[1,2],[2,3],[3,3],[4,3],[5,2],[6,1]];
  stage.innerHTML='<div class="ldD"><div class="tix"><div class="nums"></div><div class="ldFw"></div></div><div class="ldW"></div><div class="ldB"></div><div class="btns"><button type="button" class="off">Clear</button><button type="button" class="go" id="ldSub">Submit</button><button type="button">Stuck</button></div></div>';
- var q=function(s){return stage.querySelector(s)},bd=q('.ldB'),sub=q('#ldSub'),w=bd.clientWidth,tw=Math.min(54,w/6.8),th=10.4,gx=100/6.02,
+ var q=function(s){return stage.querySelector(s)},bd=q('.ldB'),sub=q('#ldSub'),w=bd.clientWidth,tw=B8?Math.min(54,w/6.8):Math.min(60,w/5.7),th=B8?10.4:11.6,gx=100/(NC+.02),
  /* Percent of the board, because the frame fills in the caption after this runs and the stage gets shorter. */
- pos=function(l,i){return [50+(i-2.5)*gx,th/2+l*(100-th)/7]},
+ pos=function(l,i){return [50+(i-(NC-1)/2)*gx,th/2+l*(100-th)/(NR-1)]},
  line=function(a,b,on){return '<line x1="'+a[0]+'%" y1="'+a[1]+'%" x2="'+b[0]+'%" y2="'+b[1]+'%" stroke="'+(on?'#e8a817':'#b9ae95')+'" stroke-width="'+(on?5:2)+'" stroke-linecap="round"/>'};
  function hud(sc,wn,st,fw){q('.nums').innerHTML='<div><small>Score</small><b>'+sc+'</b></div><div><small>Words</small><b>'+wn+'</b></div><div><small>Stars</small><b class="sr">'+'★★★'.slice(0,st)+'☆☆☆'.slice(0,3-st)+'</b></div>';q('.ldFw').innerHTML=fw}
  function say(t,c){var e=q('.ldW');e.textContent=t;e.className='ldW'+(c?' '+c:'')}
  function draw(path,next,lock,done){var has=function(l,i){return path.some(function(p){return p[0]===l&&p[1]===i})},last=path[path.length-1],o='<svg>',l,i;
-  for(l=0;l<7;l++)for(i=0;i<6;i++)kids(W,l,i).forEach(function(j){var on=path.some(function(p,k){var t=path[k+1];return t&&p[0]===l&&p[1]===i&&t[0]===l+1&&t[1]===j}),near=!done&&last[0]===l&&last[1]===i&&next.some(function(p){return p[0]===l+1&&p[1]===j})||!done&&last[0]===l+1&&last[1]===j&&next.some(function(p){return p[0]===l&&p[1]===i});if(on||near)o+=line(pos(l,i),pos(l+1,j),on)});o+='</svg>';
-  for(l=0;l<8;l++)for(i=0;i<6;i++){var p=pos(l,i),c='st'+(l===7?' end':'')+(l===0||l===7?' edge':'')+(has(l,i)?' on':'')+(!done&&last[0]===l&&last[1]===i?' now':'')+(next.some(function(n){return n[0]===l&&n[1]===i})?' nx':'')+(lock===l&&!has(l,i)?' lk':'');o+='<button type="button" class="'+c+'" data-c="'+l+'-'+i+'" style="left:'+p[0]+'%;top:'+p[1]+'%;width:'+tw+'px;height:'+th+'%;max-height:42px">'+R[l][i]+'</button>'}
+  for(l=0;l<NR-1;l++)for(i=0;i<NC;i++)kids(W,l,i).forEach(function(j){var on=path.some(function(p,k){var t=path[k+1];return t&&p[0]===l&&p[1]===i&&t[0]===l+1&&t[1]===j}),near=!done&&last[0]===l&&last[1]===i&&next.some(function(p){return p[0]===l+1&&p[1]===j})||!done&&last[0]===l+1&&last[1]===j&&next.some(function(p){return p[0]===l&&p[1]===i});if(on||near)o+=line(pos(l,i),pos(l+1,j),on)});o+='</svg>';
+  for(l=0;l<NR;l++)for(i=0;i<NC;i++){var p=pos(l,i),c='st'+(l===NR-1?' end':'')+(l===0||l===NR-1?' edge':'')+(has(l,i)?' on':'')+(!done&&last[0]===l&&last[1]===i?' now':'')+(next.some(function(n){return n[0]===l&&n[1]===i})?' nx':'')+(lock===l&&!has(l,i)?' lk':'');o+='<button type="button" class="'+c+'" data-c="'+l+'-'+i+'" style="left:'+p[0]+'%;top:'+p[1]+'%;width:'+tw+'px;height:'+th+'%;max-height:'+(B8?42:46)+'px">'+R[l][i]+'</button>'}
   bd.innerHTML=o}
  return {to:function(n){if(n<3){var p=CAT.slice(0,n+1),e=p[p.length-1];draw(p,n===2?[]:kids(W,e[0],e[1]).map(function(j){return [e[0]+1,j]}),-1);say('CAT'.slice(0,n+1));hud(0,0,0,'<span>Your words land here.</span>');sub.textContent=n<2?'3+ letters':'Submit';sub.className='go'+(n<2?' off':'')}
-   else{draw([[2,3]],[[1,2],[1,3],[1,4],[3,2],[3,3],[3,4]],2);say('+1 CAT · Go up or down','good');hud(1,1,0,'CAT');sub.textContent='Submit';sub.className='go off'}},
+   else{draw([CAT[2]],[[1,CAT[2][1]-1],[1,CAT[2][1]],[1,CAT[2][1]+1],[3,CAT[2][1]-1],[3,CAT[2][1]],[3,CAT[2][1]+1]],2);say('+1 CAT · Go up or down','good');hud(1,1,0,'CAT');sub.textContent='Submit';sub.className='go off'}},
   tgt:function(n){return n===2?sub:q('[data-c="'+CAT[n+1].join('-')+'"]')},
-  win:function(){draw(FULL,[],-1,true);say('+43 CALENDAR · Full Line!','good');hud(45,3,1,'<u>CALENDAR</u> · TAP · CAT');sub.textContent='Submit';sub.className='go off'}}}
-function coachDemo(){smDemo({name:'Ledder',moves:[{cap:'Your first word starts in the top row. We picked C. Now tap the A, one tile over.',nudge:'Not that one. Tap the A next to the C.'},{cap:'Each letter touches the last, straight ahead or one tile over. Tap the T.',nudge:'Stay next to your last letter. Tap the T just below the A.'},{cap:'That spells CAT. Tap Submit to score it.',nudge:'Tap Submit to score your word.'}],win:'Longer words score more. A word through all 8 rows adds 20. Points earn stars.',play:function(){closeAll();openDay(TODAY)},board:ldBoard})}
+  win:function(){draw(FULL,[],-1,true);say(B8?'+43 CALENDAR · Full Line!':'+37 CAPTAIN · Full Line!','good');hud(B8?45:39,3,1,B8?'<u>CALENDAR</u> · TAP · CAT':'<u>CAPTAIN</u> · TAP · CAT');sub.textContent='Submit';sub.className='go off'}}}
+function coachDemo(){smDemo({name:'Ledder',moves:[{cap:'Your first word starts in the top row. We picked C. Now tap the A, one tile over.',nudge:'Not that one. Tap the A next to the C.'},{cap:'Each letter touches the last, straight ahead or one tile over. Tap the T.',nudge:'Stay next to your last letter. Tap the T next to the A.'},{cap:'That spells CAT. Tap Submit to score it.',nudge:'Tap Submit to score your word.'}],win:'Longer words score more. A word through all '+(window.SMD_APP?8:7)+' rows adds 20. Points earn stars.',play:function(){closeAll();openDay(TODAY)},board:ldBoard})}
 document.querySelector('.tix').onclick=function(){var s=A();if(s.done)return;var o=s.found.slice().reverse().map(function(f){return '<div class="ln'+(f.deep?' bon':'')+'"><span>'+f.w+(f.deep?' · Full Line':'')+'</span><i></i><span>'+(f.p+(f.deep?DEEPB:0))+'</span></div>'}).join('');$('wlb').innerHTML=o||'<div class="note">No words yet.</div>';$('wlt').innerHTML='<div class="ln tot"><span>'+s.found.length+' word'+(s.found.length===1?'':'s')+'</span><i></i><span>'+scoreA(s)+'</span></div>';var sc0=scoreA(s),lv=AP[cur.A].s.concat([topL()]),nm=['★','★★','★★★','Top of the Ledder'],pr=lv.map(function(v,i){var got=sc0>=v||(i<3&&s.st>i)||(i===3&&s.top);return '<div class="ln'+(got?' lg':'')+'"><span>'+nm[i]+'</span><i></i><span>'+(got?v+' pts · Done':v+' pts · '+(v-sc0)+' more')+'</span></div>'}).join('');$('wlp').innerHTML=pr+'<div class="ln"><span>Everyday words left</span><i></i><span>'+wordsLeft(s)+'</span></div>';$('wl').className='show'};$('wlC').onclick=function(){$('wl').className=''};$('wlS').onclick=function(){$('wsc').className='show'};$('wsC').onclick=function(){$('wsc').className=''};
 $('s3K').onclick=function(){$('st3').className=''};$('s3D').onclick=function(){$('st3').className='';A().done=true;render()};
 $('frB').onclick=function(){$('fr').className=''};$('hpC').onclick=function(){$('hp').className=''};$('hpD').onclick=coachDemo;
@@ -343,9 +345,9 @@ var OLDN=71,NOREP=60,ORD={},OB=321,NEW8=5,N8=108,ORD8={};
 function shuf(p,n){n=n||OB;var o=[],x=Math.imul(p,2654435761)^0x4c454444;function r(k){x=x+0x6D2B79F5|0;var t=Math.imul(x^x>>>15,1|x);t=t+Math.imul(t^t>>>7,61|t)^t;return ((t^t>>>14)>>>0)%k}for(var i=0;i<n;i++)o.push(i);for(i=n-1;i>0;i--){var j=r(i+1),t=o[i];o[i]=o[j];o[j]=t}return o}
 function passOne(){var n=OB,o=[];for(var i=0;i<n;i++)o.push(i<OLDN?(OFF+i)%OLDN:i);return o}
 function passOrder(p){if(ORD[p])return ORD[p];var q=2;if(!ORD[1])ORD[1]=passOne();while(ORD[q])q++;for(;q<=p;q++){var prev=ORD[q-1],n=prev.length,o=shuf(q),tail={},j=NOREP;for(var i=n-NOREP;i<n;i++)tail[prev[i]]=1;for(i=0;i<NOREP;i++)if(tail[o[i]]){while(tail[o[j]])j++;var t=o[i];o[i]=o[j];o[j]=t;j++}ORD[q]=o}return ORD[p]}
-/* From No. 5 (Nov 7, 2026) every day uses the 6 x 8 boards, each built around one hidden 8-letter word. Pass 1 is file order, then each pass is a fresh shuffle with the same no-repeat rule. Days 1-4 keep their 5 x 7 boards. */
+/* App only (Jeff, Nov 6): inside smAisle Daily (window.SMD_APP), from No. 5 (Nov 7, 2026) every day uses the 6 x 8 boards; the website keeps 5 x 7, each built around one hidden 8-letter word. Pass 1 is file order, then each pass is a fresh shuffle with the same no-repeat rule. Days 1-4 keep their 5 x 7 boards. */
 function order8(p){if(ORD8[p])return ORD8[p];var q=2;if(!ORD8[1]){var a=[];for(var i=0;i<N8;i++)a.push(i);ORD8[1]=a}while(ORD8[q])q++;for(;q<=p;q++){var prev=ORD8[q-1],n=N8,o=shuf(q+7000,N8),tail={},j=NOREP;for(i=n-NOREP;i<n;i++)tail[prev[i]]=1;for(i=0;i<NOREP;i++)if(tail[o[i]]){while(tail[o[j]])j++;var t=o[i];o[i]=o[j];o[j]=t;j++}ORD8[q]=o}return ORD8[p]}
-function boardFor(n){if(n>=NEW8){var k=n-NEW8;return OB+order8(1+Math.floor(k/N8))[k%N8]}if(n<=OLDN)return (((OFF+n-1)%OLDN)+OLDN)%OLDN;var L=OB,k=n-1;return passOrder(1+Math.floor(k/L))[k%L]}
+function boardFor(n){if(n>=NEW8&&window.SMD_APP){var k=n-NEW8;return OB+order8(1+Math.floor(k/N8))[k%N8]}if(n<=OLDN)return (((OFF+n-1)%OLDN)+OLDN)%OLDN;var L=OB,k=n-1;return passOrder(1+Math.floor(k/L))[k%L]}
 function shortD(d){return new Date(d+'T12:00:00Z').toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'UTC'})}
 var TODAY=dayS(),DAY=TODAY;cur.A=boardFor(dayNo(TODAY));
 (function(){var o=lsG('lmig',0);if(!o){lsP('lmig',1);var d=lsG('ledder-today',null);if(d&&d.day===TODAY&&d.s&&!lsG('ld-d-'+TODAY,null))lsP('ld-d-'+TODAY,d.s)}})();
