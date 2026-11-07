@@ -1,7 +1,7 @@
 // Run from anywhere: node source/build.js x source/boards.json
 const fs=require('fs'),path=require('path');const S=process.argv[2],BF=process.argv[3];const SRC=__dirname;let h=fs.readFileSync(path.join(SRC,'base.html'),'utf8');
 function R(a,b,all){const n=h.split(a).length-1;if(n<1||(!all&&n!==1))throw new Error('miss '+n+' '+a.slice(0,60));h=h.split(a).join(b)}
-const VER='1.10',VD='Nov 6';
+const VER='1.11',VD='Nov 7';
 // ---- boards
 const F=JSON.parse(fs.readFileSync(BF));
 const m=h.match(/var AP=\[.*?\],BP=\[.*?\];/);if(!m)throw 'AP';const F8=JSON.parse(fs.readFileSync(path.join(SRC,'boards8.json')));
@@ -115,7 +115,9 @@ function passOne(){var n=OB,o=[];for(var i=0;i<n;i++)o.push(i<OLDN?(OFF+i)%OLDN:
 function passOrder(p){if(ORD[p])return ORD[p];var q=2;if(!ORD[1])ORD[1]=passOne();while(ORD[q])q++;for(;q<=p;q++){var prev=ORD[q-1],n=prev.length,o=shuf(q),tail={},j=NOREP;for(var i=n-NOREP;i<n;i++)tail[prev[i]]=1;for(i=0;i<NOREP;i++)if(tail[o[i]]){while(tail[o[j]])j++;var t=o[i];o[i]=o[j];o[j]=t;j++}ORD[q]=o}return ORD[p]}
 /* App only (Jeff, Nov 6): inside smAisle Daily (window.SMD_APP), from No. 5 (Nov 7, 2026) every day uses the 6 x 8 boards; the website keeps 5 x 7, each built around one hidden 8-letter word. Pass 1 is file order, then each pass is a fresh shuffle with the same no-repeat rule. Days 1-4 keep their 5 x 7 boards. */
 function order8(p){if(ORD8[p])return ORD8[p];var q=2;if(!ORD8[1]){var a=[];for(var i=0;i<N8;i++)a.push(i);ORD8[1]=a}while(ORD8[q])q++;for(;q<=p;q++){var prev=ORD8[q-1],n=N8,o=shuf(q+7000,N8),tail={},j=NOREP;for(i=n-NOREP;i<n;i++)tail[prev[i]]=1;for(i=0;i<NOREP;i++)if(tail[o[i]]){while(tail[o[j]])j++;var t=o[i];o[i]=o[j];o[j]=t;j++}ORD8[q]=o}return ORD8[p]}
-function boardFor(n){if(n>=NEW8&&window.SMD_APP){var k=n-NEW8;return OB+order8(1+Math.floor(k/N8))[k%N8]}if(n<=OLDN)return (((OFF+n-1)%OLDN)+OLDN)%OLDN;var L=OB,k=n-1;return passOrder(1+Math.floor(k/L))[k%L]}
+/* Nov 7: 6 x 8 everywhere, app and website (Jeff). A website player who already started today's 5 x 7 board before the switch keeps it for today only. */
+function keep7(n){if(window.SMD_APP||n!==NEW8)return false;try{var o=JSON.parse(localStorage.getItem('ld-d-2026-11-07')||'null');return !!(o&&o.found&&o.found.length)}catch(e){return false}}
+function boardFor(n){if(n>=NEW8&&!keep7(n)){var k=n-NEW8;return OB+order8(1+Math.floor(k/N8))[k%N8]}if(n<=OLDN)return (((OFF+n-1)%OLDN)+OLDN)%OLDN;var L=OB,k=n-1;return passOrder(1+Math.floor(k/L))[k%L]}
 function shortD(d){return new Date(d+'T12:00:00Z').toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'UTC'})}
 var TODAY=dayS(),DAY=TODAY;cur.A=boardFor(dayNo(TODAY));
 (function(){var o=lsG('lmig',0);if(!o){lsP('lmig',1);var d=lsG('ledder-today',null);if(d&&d.day===TODAY&&d.s&&!lsG('ld-d-'+TODAY,null))lsP('ld-d-'+TODAY,d.s)}})();
@@ -191,7 +193,7 @@ R(`<p>That was your free look. Get the whole board, the stars and Top of the Led
 R(`$('mP').onclick=function(){`,`$('gtB').onclick=function(){if(window.DG_APP)toApp({cmd:'plus'});else location.href='https://smaisle.app/daily/'};$('gtH').onclick=hubGo;$('gtR').onclick=function(){location.reload()};
 window.dgNative=function(k,o){if(k==='store'&&o){window.DG_APP=window.DG_APP||{};var was=PVM;window.DG_APP.plus=!!o.plus;if(was&&o.plus)location.reload()}};
 $('mP').onclick=function(){`);
-R(`</style>`,`html:not(.a8) .w8,html.a8 .w7{display:none!important}\n</style><script>if(window.SMD_APP)document.documentElement.classList.add('a8')</script>`);
+R(`</style>`,`html:not(.a8) .w8,html.a8 .w7{display:none!important}\n</style><script>document.documentElement.classList.add('a8')</script>`);
 /* Ghosted PREVIEW across the screen in the free preview (Jeff, Nov 6). */
 R(`</body>`,`<style>.pvGhost{position:fixed;inset:0;display:none;align-items:center;justify-content:center;pointer-events:none;z-index:40;overflow:hidden;color:inherit}.pvGhost.on{display:flex}.pvGhost span{font:900 25vw/1 system-ui,-apple-system,sans-serif;letter-spacing:.05em;opacity:.08;transform:rotate(-28deg);white-space:nowrap;user-select:none;-webkit-user-select:none}@media(min-width:520px){.pvGhost span{font-size:130px}}</style>
 <div class="pvGhost" aria-hidden="true"><span>PREVIEW</span></div>
