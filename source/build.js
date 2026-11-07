@@ -1,7 +1,7 @@
 // Run from anywhere: node source/build.js x source/boards.json
 const fs=require('fs'),path=require('path');const S=process.argv[2],BF=process.argv[3];const SRC=__dirname;let h=fs.readFileSync(path.join(SRC,'base.html'),'utf8');
 function R(a,b,all){const n=h.split(a).length-1;if(n<1||(!all&&n!==1))throw new Error('miss '+n+' '+a.slice(0,60));h=h.split(a).join(b)}
-const VER='1.11',VD='Nov 7';
+const VER='1.12',VD='Nov 7';
 // ---- boards
 const F=JSON.parse(fs.readFileSync(BF));
 const m=h.match(/var AP=\[.*?\],BP=\[.*?\];/);if(!m)throw 'AP';const F8=JSON.parse(fs.readFileSync(path.join(SRC,'boards8.json')));
